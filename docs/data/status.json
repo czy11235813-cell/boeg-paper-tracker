@@ -1,13 +1,20 @@
 {
   "journalName": "Bulletin of Engineering Geology and the Environment (BOEG)",
   "emUrl": "https://www.editorialmanager.com/boeg/default2.aspx",
-  "lastCheckedAt": "2026-11-22T09:43:00.615Z",
+  "lastCheckedAt": "2026-11-22T09:53:14.844Z",
   "lastSuccessAt": null,
   "lastCheckStatus": "ERROR",
   "lastCheckMessage": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for locator('input[name=\"authorLogin\"], input[value=\"Author Login\"]').first()\n    - locator resolved to <input type=\"button\" name=\"authorLogin\" value=\"Author Login\" onclick=\"doLogin('author');\" onblur=\"buttonFocus='nobody';\" onfocus=\"buttonFocus='author';\"/>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div class=\"onetrust-pc-dark-filter ot-fade-in\"></div> from <div data-nosnippet=\"true\" id=\"onetrust-consent-sdk\">…</div> subtree intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div class=\"onetrust-pc-dark-filter ot-fade-in\"></div> from <div data-nosnippet=\"true\" id=\"onetrust-consent-sdk\">…</div> subtree intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    19 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div class=\"onetrust-pc-dark-filter ot-fade-in\"></div> from <div data-nosnippet=\"true\" id=\"onetrust-consent-sdk\">…</div> subtree intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n",
   "manuscripts": [],
   "history": [],
   "checkLogs": [
+    {
+      "timestamp": "2026-11-22T09:53:14.844Z",
+      "ok": false,
+      "changesCount": 0,
+      "emailSent": false,
+      "message": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for locator('input[name=\"authorLogin\"], input[value=\"Author Login\"]').first()\n    - locator resolved to <input type=\"button\" name=\"authorLogin\" value=\"Author Login\" onclick=\"doLogin('author');\" onblur=\"buttonFocus='nobody';\" onfocus=\"buttonFocus='author';\"/>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div class=\"onetrust-pc-dark-filter ot-fade-in\"></div> from <div data-nosnippet=\"true\" id=\"onetrust-consent-sdk\">…</div> subtree intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div class=\"onetrust-pc-dark-filter ot-fade-in\"></div> from <div data-nosnippet=\"true\" id=\"onetrust-consent-sdk\">…</div> subtree intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    19 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div class=\"onetrust-pc-dark-filter ot-fade-in\"></div> from <div data-nosnippet=\"true\" id=\"onetrust-consent-sdk\">…</div> subtree intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n"
+    },
     {
       "timestamp": "2026-11-22T09:43:00.615Z",
       "ok": false,
