@@ -427,23 +427,32 @@ async function scrapeBoegStatus(config, options = {}) {
       timeout: 60000,
     });
 
-    // 2. 若弹出 OneTrust Cookie 提示框，礼貌点击关闭以免遮挡元素
-    try {
-      const cookieBtn = page.locator('#onetrust-accept-btn-handler');
-      if (await cookieBtn.isVisible({ timeout: 3500 })) {
-        await cookieBtn.click();
-      }
-    } catch (_) {
-      // 无弹窗则直接继续
-    }
+    // 2. 处理海外/国内访问时可能延迟弹出的 OneTrust Cookie 遮罩层（避免 .onetrust-pc-dark-filter 阻挡点击）
+    const dismissCookieBanner = async () => {
+      try {
+        const cookieBtn = page.locator('#onetrust-accept-btn-handler');
+        if (await cookieBtn.isVisible({ timeout: 2500 })) {
+          await cookieBtn.click({ force: true }).catch(() => {});
+        }
+      } catch (_) {}
+      try {
+        await page.addStyleTag({
+          content:
+            '#onetrust-consent-sdk, .onetrust-pc-dark-filter { display: none !important; pointer-events: none !important; }',
+        });
+      } catch (_) {}
+    };
+
+    await dismissCookieBanner();
 
     // 3. 定位嵌套在 iframe[name="content"] -> iframe[name="login"] 中的登录框
     let loginFrame = await findLoginFrame(page, 18000);
     if (!loginFrame) {
+      await dismissCookieBanner();
       // 备用方案：点击顶部导航栏 Login 链接加载登录框
       const topLoginLink = page.locator('a#Login, a[name="Login"]').first();
       if (await topLoginLink.count()) {
-        await topLoginLink.click();
+        await topLoginLink.click({ force: true });
         loginFrame = await findLoginFrame(page, 15000);
       }
     }
@@ -454,9 +463,10 @@ async function scrapeBoegStatus(config, options = {}) {
       );
     }
 
-    // 4. 填入用户名密码并点击 Author Login（兼容点击后子 iframe 立即跳转销毁导致 Frame detached 的情况）
+    // 4. 填入用户名密码并触发 Author Login（直接调用按钮 DOM click，彻底避免遮罩拦截与 Frame detached）
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
+        await dismissCookieBanner();
         await page.waitForTimeout(400);
         if (loginFrame.isDetached()) {
           loginFrame = await findLoginFrame(page, 8000);
@@ -475,7 +485,7 @@ async function scrapeBoegStatus(config, options = {}) {
 
         await userInput.fill(config.emUsername, { timeout: 10000 });
         await passInput.fill(config.emPassword, { timeout: 10000 });
-        await authorLoginBtn.click({ noWaitAfter: true, timeout: 10000 });
+        await authorLoginBtn.evaluate((btn) => btn.click());
         break;
       } catch (clickErr) {
         const msg = String(clickErr.message || '');
@@ -488,7 +498,6 @@ async function scrapeBoegStatus(config, options = {}) {
           if (!isDetach) throw clickErr;
           break;
         }
-        // 若是加载期间子 frame 重载导致 detach，短暂等待后检查是否仍在登录页并重试一次
         await page.waitForTimeout(1200);
         const stillHasLogin = await findLoginFrame(page, 2500);
         if (!stillHasLogin) break;
