@@ -1,13 +1,61 @@
 {
   "journalName": "Bulletin of Engineering Geology and the Environment (BOEG)",
   "emUrl": "https://www.editorialmanager.com/boeg/default2.aspx",
-  "lastCheckedAt": "2026-11-22T09:53:14.844Z",
-  "lastSuccessAt": null,
-  "lastCheckStatus": "ERROR",
-  "lastCheckMessage": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for locator('input[name=\"authorLogin\"], input[value=\"Author Login\"]').first()\n    - locator resolved to <input type=\"button\" name=\"authorLogin\" value=\"Author Login\" onclick=\"doLogin('author');\" onblur=\"buttonFocus='nobody';\" onfocus=\"buttonFocus='author';\"/>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div class=\"onetrust-pc-dark-filter ot-fade-in\"></div> from <div data-nosnippet=\"true\" id=\"onetrust-consent-sdk\">…</div> subtree intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div class=\"onetrust-pc-dark-filter ot-fade-in\"></div> from <div data-nosnippet=\"true\" id=\"onetrust-consent-sdk\">…</div> subtree intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    19 × waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div class=\"onetrust-pc-dark-filter ot-fade-in\"></div> from <div data-nosnippet=\"true\" id=\"onetrust-consent-sdk\">…</div> subtree intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n",
-  "manuscripts": [],
-  "history": [],
+  "lastCheckedAt": "2026-11-22T10:03:12.990Z",
+  "lastSuccessAt": "2026-11-22T10:03:12.990Z",
+  "lastCheckStatus": "UPDATED",
+  "lastCheckMessage": "检测到 1 项进展动态，已推送邮件至 Gmail",
+  "manuscripts": [
+    {
+      "manuscriptNumber": "BOEG-D-26-01970",
+      "title": "Frictional strength and stability of water-bearing clay gouges with different hydrophilicity: An insight from laboratory friction experiments",
+      "titleHash": "ffcfa0b9f3303e0c",
+      "initialDateSubmitted": "09 Jun 2026",
+      "statusDate": "19 Jun 2026",
+      "currentStatus": "Editor Invited",
+      "finalDisposition": "",
+      "revisionDueDate": "",
+      "folder": "Submissions Being Processed",
+      "folderCn": "初审/外审处理中",
+      "stageIndex": 2,
+      "stageLabel": "编辑处理中",
+      "badgeColor": "info",
+      "cnTitle": "稿件在编辑手中 (With Editor / Editor Assigned)",
+      "explanation": "稿件已通过形式审查并分配给主编或副主编（AE），编辑正在初审稿件创新性与期刊契合度，并准备物色审稿专家。",
+      "statusChangeCount": 0,
+      "dateChangeCount": 0,
+      "firstTrackedAt": "2026-11-22T10:03:12.990Z",
+      "lastChangedAt": "2026-11-22T10:03:12.990Z"
+    }
+  ],
+  "history": [
+    {
+      "id": "2026-11-22T10:03:12.990Z_BOEG-D-26-01970",
+      "timestamp": "2026-11-22T10:03:12.990Z",
+      "changeType": "FIRST_TRACKED",
+      "manuscriptNumber": "BOEG-D-26-01970",
+      "title": "Frictional strength and stability of water-bearing clay gouges with different hydrophilicity: An insight from laboratory friction experiments",
+      "oldStatus": "",
+      "newStatus": "Editor Invited",
+      "oldStatusDate": "",
+      "newStatusDate": "19 Jun 2026",
+      "oldFolder": "",
+      "newFolder": "Submissions Being Processed",
+      "initialDateSubmitted": "09 Jun 2026",
+      "revisionDueDate": "",
+      "finalDisposition": "",
+      "summary": "首次纳入监控：当前状态为「Editor Invited」(19 Jun 2026)"
+    }
+  ],
   "checkLogs": [
+    {
+      "timestamp": "2026-11-22T10:03:12.990Z",
+      "ok": true,
+      "changesCount": 1,
+      "emailSent": true,
+      "emailError": null,
+      "message": "检测到 1 项进展动态，已推送邮件至 Gmail"
+    },
     {
       "timestamp": "2026-11-22T09:53:14.844Z",
       "ok": false,
