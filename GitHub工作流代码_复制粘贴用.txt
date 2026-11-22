@@ -1,0 +1,110 @@
+name: BOEG 论文投稿进度自动跟踪与网页更新
+
+on:
+  # 每天北京时间 09:35 和 21:35 自动检查一次（UTC 时间 01:35 和 13:35）
+  schedule:
+    - cron: '35 1,13 * * *'
+
+  # 支持在 GitHub 页面或手机 GitHub App 手动点击 "Run workflow" 立即检查
+  workflow_dispatch:
+    inputs:
+      force_email:
+        description: '无论状态是否变化，强制发送一封当前进度邮件到 Gmail（用于测试）'
+        required: false
+        default: false
+        type: boolean
+
+  # 当首次推送代码或修改前端看板文件时自动部署网页（不重复触发爬虫）
+  push:
+    branches: [main, master]
+    paths:
+      - 'docs/index.html'
+      - 'docs/style.css'
+      - 'docs/app.js'
+      - '.github/workflows/track-boeg.yml'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'boeg-tracker-pages'
+  cancel-in-progress: false
+
+jobs:
+  check-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 1. 检出仓库代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 2. 配置 Node.js 运行环境
+        if: github.event_name != 'push'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 3. 安装依赖与 Playwright Chromium 浏览器
+        if: github.event_name != 'push'
+        run: |
+          npm install
+          npx playwright install chromium --with-deps
+
+      - name: 4. 登录 BOEG Editorial Manager 检查进度并按需发送邮件
+        id: check
+        if: github.event_name != 'push'
+        continue-on-error: true
+        env:
+          EM_URL: ${{ secrets.EM_URL || 'https://www.editorialmanager.com/boeg/default2.aspx' }}
+          JOURNAL_NAME: ${{ secrets.JOURNAL_NAME || 'Bulletin of Engineering Geology and the Environment (BOEG)' }}
+          EM_USERNAME: ${{ secrets.EM_USERNAME }}
+          EM_PASSWORD: ${{ secrets.EM_PASSWORD }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          NOTIFY_TO: ${{ secrets.NOTIFY_TO }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          DASHBOARD_URL: ${{ secrets.DASHBOARD_URL || format('https://{0}.github.io/{1}/', github.repository_owner, github.event.repository.name) }}
+          HIDE_MANUSCRIPT_TITLE: ${{ secrets.HIDE_MANUSCRIPT_TITLE || 'false' }}
+          FORCE_EMAIL: ${{ github.event.inputs.force_email || 'false' }}
+        run: node scripts/check_status.js
+
+      - name: 5. 将最新进度与历史记录写回仓库 (docs/data/status.json)
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/status.json
+          if git diff --staged --quiet; then
+            echo "状态文件无变更，无需提交"
+          else
+            git commit -m "chore: update BOEG tracking status"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+      - name: 6. 配置并上传 GitHub Pages 静态看板产物
+        continue-on-error: true
+        uses: actions/configure-pages@v5
+
+      - name: 7. 打包 docs/ 网页目录
+        continue-on-error: true
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './docs'
+
+      - name: 8. 部署更新到 GitHub Pages 在线网页
+        id: deployment
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+
+      - name: 9. 检查抓取步骤状态
+        if: github.event_name != 'push' && steps.check.outcome == 'failure'
+        run: |
+          echo "::error::本次 BOEG 状态检查执行失败，请检查上方日志或 Secrets 配置。"
+          exit 1

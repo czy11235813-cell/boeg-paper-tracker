@@ -1,0 +1,16 @@
+{
+  "name": "boeg-paper-tracker",
+  "version": "1.0.0",
+  "description": "Automated Editorial Manager (BOEG) manuscript progress tracker with Web Dashboard, GitHub Actions & Email Alerts",
+  "private": true,
+  "scripts": {
+    "check": "node scripts/check_status.js",
+    "test-email": "node scripts/check_status.js --test-email",
+    "check-headed": "node scripts/check_status.js --headed",
+    "serve": "node scripts/local_server.js"
+  },
+  "dependencies": {
+    "nodemailer": "^6.10.0",
+    "playwright": "^1.51.0"
+  }
+}

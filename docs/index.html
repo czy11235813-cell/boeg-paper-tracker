@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BOEG 科研论文投稿进度自动跟踪看板</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- 顶部栏 -->
+    <header class="topbar">
+      <div class="topbar-main">
+        <div class="brand-badge">SPRINGER NATURE · EDITORIAL MANAGER TRACKER</div>
+        <h1 id="journalTitle">Bulletin of Engineering Geology and the Environment (BOEG)</h1>
+        <p class="subtitle">
+          自动化追踪论文审稿动态 · 状态变更与审稿日期跳动实时推送至 Google 邮箱
+        </p>
+      </div>
+      <div class="topbar-actions">
+        <button id="btnOpenLocalConfig" class="btn btn-outline hidden" type="button">
+          ⚙️ 账号与邮箱配置
+        </button>
+        <button id="btnLocalCheckNow" class="btn btn-primary hidden" type="button">
+          🔄 立即登录抓取进度
+        </button>
+        <a
+          id="emPortalLink"
+          href="https://www.editorialmanager.com/boeg/default2.aspx"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-dark"
+        >
+          🔗 打开 BOEG 投稿官网
+        </a>
+      </div>
+    </header>
+
+    <!-- 系统巡检状态横幅 -->
+    <section id="statusBanner" class="status-banner status-neutral">
+      <div class="banner-left">
+        <span id="statusDot" class="pulse-dot"></span>
+        <div>
+          <div id="lastCheckSummary" class="banner-title">正在读取最新投稿跟踪数据...</div>
+          <div id="lastCheckTime" class="banner-sub">自动巡检计划：每日北京时间 09:35 / 21:35</div>
+        </div>
+      </div>
+      <div class="banner-right">
+        <button id="btnRefreshData" class="btn btn-sm btn-ghost" type="button">刷新页面数据</button>
+      </div>
+    </section>
+
+    <!-- 本地模式专属：配置与一键测试抽屉面板（在 GitHub Pages 静态访问时自动隐藏） -->
+    <section id="localConfigPanel" class="card config-panel hidden">
+      <div class="card-header">
+        <div>
+          <h2>🛠️ 本地配置与一键连通测试中心</h2>
+          <p class="card-desc">
+            您当前处于本地安全控制台（<code>127.0.0.1</code>）。所有账号与授权码仅保存在本地 <code>.env</code> 文件中，已被 Git 忽略，绝不会上传到公开代码库。
+          </p>
+        </div>
+        <button id="btnCloseConfig" class="btn btn-sm btn-ghost" type="button">收起面板</button>
+      </div>
+
+      <form id="configForm" class="config-grid">
+        <div class="form-section">
+          <h3>1. BOEG 投稿系统登录信息</h3>
+          <label>
+            <span>投稿系统网址 (EM_URL)</span>
+            <input type="url" id="cfgEmUrl" required placeholder="https://www.editorialmanager.com/boeg/default2.aspx" />
+          </label>
+          <label>
+            <span>Editorial Manager 用户名 (EM_USERNAME)</span>
+            <input type="text" id="cfgEmUsername" required placeholder="输入您在 BOEG 的登录用户名" />
+          </label>
+          <label>
+            <span>Editorial Manager 密码 (EM_PASSWORD)</span>
+            <input type="password" id="cfgEmPassword" placeholder="输入登录密码" />
+            <small id="emPassHint" class="field-hint"></small>
+          </label>
+        </div>
+
+        <div class="form-section">
+          <h3>2. 国内邮箱发信 → Gmail 收信配置</h3>
+          <label>
+            <span>国内发件邮箱账号 (SMTP_USER，支持 QQ / 163 / 126 等)</span>
+            <input type="email" id="cfgSmtpUser" required placeholder="例如：12345678@qq.com 或 xxx@163.com" />
+          </label>
+          <label>
+            <span>发件邮箱 16 位 SMTP 授权码 (SMTP_PASS，非登录密码)</span>
+            <input type="password" id="cfgSmtpPass" placeholder="在 QQ/163 邮箱设置 -> POP3/SMTP 开启后生成的授权码" />
+            <small id="smtpPassHint" class="field-hint">支持自动去除复制时带入的空格</small>
+          </label>
+          <label>
+            <span>接收进展通知的谷歌邮箱 (NOTIFY_TO)</span>
+            <input type="text" id="cfgNotifyTo" required placeholder="例如：yourname@gmail.com（多个邮箱用英文逗号分隔）" />
+          </label>
+          <div class="inline-row">
+            <label class="checkbox-label">
+              <input type="checkbox" id="cfgHideTitle" />
+              <span>在网页数据中隐藏论文完整标题（若使用公开 GitHub 仓库推荐勾选，邮件仍显示完整标题）</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="config-actions">
+          <button type="submit" class="btn btn-primary">💾 保存配置到本地 (.env)</button>
+          <button type="button" id="btnTestEmail" class="btn btn-outline">📧 发送一封测试邮件到 Gmail</button>
+          <button type="button" id="btnCheckHeaded" class="btn btn-outline">🖥️ 弹出浏览器可视化抓取一次</button>
+          <button type="button" id="btnCheckAndMail" class="btn btn-outline">📬 抓取并强制发一封进度邮件</button>
+        </div>
+      </form>
+      <div id="localActionFeedback" class="action-feedback hidden"></div>
+    </section>
+
+    <!-- 在审稿件核心卡片列表 -->
+    <section id="manuscriptsContainer" class="manuscripts-section">
+      <!-- 由 app.js 动态渲染 -->
+    </section>
+
+    <!-- 双栏：左栏历史状态变更时间轴 + 右栏巡检日志与状态词典 -->
+    <div class="bottom-grid">
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h2>⏱️ 投稿状态变更时间轴</h2>
+            <p class="card-desc">自动记录每一次状态名称变更及审稿日期（Status Date）跳动</p>
+          </div>
+        </div>
+        <div id="timelineContainer" class="timeline-list">
+          <!-- 动态渲染 -->
+        </div>
+      </section>
+
+      <div class="side-stack">
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>📖 Editorial Manager 状态速查指南</h2>
+              <p class="card-desc">BOEG 常见审稿阶段含义参考</p>
+            </div>
+          </div>
+          <div class="stage-guide-list">
+            <div class="guide-item">
+              <span class="guide-tag">Submitted to Journal</span>
+              <p>已投递至编辑部，等待形式审查（查重、格式、声明检查）及分配 <code>BOEG-D-...</code> 稿号。</p>
+            </div>
+            <div class="guide-item">
+              <span class="guide-tag">With Editor</span>
+              <p>已转交主编或副主编（AE）进行初审评估，判断是否契合期刊方向并准备邀请外审专家。</p>
+            </div>
+            <div class="guide-item">
+              <span class="guide-tag">Under Review</span>
+              <p>同行外审进行中。<strong>若状态不变但 Status Date 更新</strong>，通常意味着有新审稿人接受邀请，或某位审稿人已提交审稿报告！</p>
+            </div>
+            <div class="guide-item">
+              <span class="guide-tag">Required Reviews Completed</span>
+              <p>已收回达到期刊最低份数要求的审稿意见，系统已提醒处理编辑进行裁决评估。</p>
+            </div>
+            <div class="guide-item">
+              <span class="guide-tag">Decision in Process</span>
+              <p>编辑正在撰写裁决信（大修 / 小修 / 接收 / 拒稿），通常数日内即会收到正式邮件。</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>🩺 最近自动巡检记录</h2>
+              <p class="card-desc">最近 15 次云端/本地定时检查健康度</p>
+            </div>
+          </div>
+          <div id="logsContainer" class="logs-list">
+            <!-- 动态渲染 -->
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <span>BOEG Manuscript Automated Tracker · 数据仅用于作者个人科研进度追踪</span>
+    </footer>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
