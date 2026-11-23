@@ -1,8 +1,8 @@
 {
   "journalName": "Bulletin of Engineering Geology and the Environment (BOEG)",
   "emUrl": "https://www.editorialmanager.com/boeg/default2.aspx",
-  "lastCheckedAt": "2026-11-22T20:27:37.323Z",
-  "lastSuccessAt": "2026-11-22T20:27:37.323Z",
+  "lastCheckedAt": "2026-11-23T09:42:28.967Z",
+  "lastSuccessAt": "2026-11-23T09:42:28.967Z",
   "lastCheckStatus": "OK",
   "lastCheckMessage": "巡检正常（共 1 篇稿件，状态暂无新变化）",
   "manuscripts": [
@@ -48,6 +48,14 @@
     }
   ],
   "checkLogs": [
+    {
+      "timestamp": "2026-11-23T09:42:28.967Z",
+      "ok": true,
+      "changesCount": 0,
+      "emailSent": false,
+      "emailError": null,
+      "message": "巡检正常（共 1 篇稿件，状态暂无新变化）"
+    },
     {
       "timestamp": "2026-11-22T20:27:37.323Z",
       "ok": true,
